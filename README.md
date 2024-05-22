@@ -10,16 +10,16 @@ java -jar LocalizeTranslate.jar your_path\strings.xml -server=openai -exeMode=in
 
 ## Parameters
 
-### -server
+### `-server`
 Specifies the translation service to use. Options are `openai` or `azure`. Configuration is required in the `env.json` file.
 
-### -exeMode
+### `-exeMode`
 Defines the execution mode. Options are `incremental` for incremental updates or `renew` for full updates.
 
-### -lang
+### `-lang`
 Specifies the languages to translate into, separated by commas.
 
-### -reorganize
+### `-reorganize`
 Reorganizes all translated files, removes unnecessary lines, and generates a new `strings_converted.json` file.
 
 
