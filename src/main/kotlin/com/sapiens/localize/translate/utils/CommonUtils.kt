@@ -28,7 +28,7 @@ private fun jarPath(): String {
     val jarPath = classPath.split(File.pathSeparator).firstOrNull { it.endsWith(".jar") }
     // 如果找不到 JAR 文件路径，则抛出异常
     if (jarPath == null) {
-        throw RuntimeException("无法找到 JAR 文件路径")
+        throw RuntimeException("Can't find jar path")
     }
     // 返回 JAR 文件的规范化目录
     return File(jarPath).parentFile.canonicalPath
