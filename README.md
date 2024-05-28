@@ -3,9 +3,10 @@
 
 ## Usage
 
-### Download jar
+### 1.Download jar
 [LocalizeTranslate.jar](https://github.com/john990/LocalizeTranslate/raw/master/LocalizeTranslate.jar)
 
+### 2.Run command
 To translate your Android app's strings.xml file using AI, run the following command:
 
 ```bash
