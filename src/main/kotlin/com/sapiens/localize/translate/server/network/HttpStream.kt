@@ -1,8 +1,8 @@
 package com.sapiens.localize.translate.server.network
 
-import com.google.gson.GsonBuilder
 import com.sapiens.localize.translate.server.network.interceptor.HeaderInterceptor
 import com.sapiens.localize.translate.utils.PolicyViolationRequestException
+import com.sapiens.localize.translate.utils.gson
 import com.sapiens.localize.translate.utils.logi
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -49,7 +49,7 @@ private suspend fun executeHttpStreamInternal(url: String, data: Any? = null, ca
 private fun call(url: String, data: Any? = null): Response {
     val client = okHttpClient()
     val body =
-        if (data == null) data else (if (data is String) data else GsonBuilder().serializeNulls().create().toJson(data))
+        if (data == null) data else (if (data is String) data else gson.toJson(data))
 
     logi(TAG, "executeHttpStream:$body")
 

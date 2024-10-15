@@ -18,8 +18,6 @@ val isDebug: Boolean by lazy { !ClassLoader.getSystemResource("MainKt.class").to
 
 fun getProjectDir(): String = if (isDebug) System.getProperty("user.dir") else jarPath()
 
-fun gson() = GsonBuilder().disableHtmlEscaping().create()
-
 private fun jarPath(): String {
 /// 获取当前的 class path
     val jarFilePath = object {}.javaClass.protectionDomain.codeSource.location.toURI().path
@@ -30,3 +28,5 @@ private fun jarPath(): String {
 
     return parentFile.canonicalPath
 }
+
+val gson = GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create()

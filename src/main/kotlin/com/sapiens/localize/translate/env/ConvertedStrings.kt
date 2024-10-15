@@ -1,10 +1,12 @@
 package com.sapiens.localize.translate.env
 
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.sapiens.localize.translate.parser.XmlParser
-import com.sapiens.localize.translate.utils.*
+import com.sapiens.localize.translate.utils.alignWithSource
+import com.sapiens.localize.translate.utils.getProjectDir
+import com.sapiens.localize.translate.utils.gson
+import com.sapiens.localize.translate.utils.logi
 import java.io.File
 
 data class ConvertedStrings(
@@ -40,7 +42,7 @@ private fun File.prepareFile(sourceFile: File) {
         this.createNewFile()
         logi("", "The file strings_converted.json does not exist, create a new one.")
         val strings = sourceFile.xmlToStrings()
-        this.writeText(GsonBuilder().setPrettyPrinting().create().toJson(strings))
+        this.writeText(gson.toJson(strings))
     }
 }
 
@@ -53,7 +55,7 @@ private fun File.syncStringWithSource(sourceFile: File) {
 
     if (!localStrings.areListsEqual(newStrings)) {
         logi("", "found diff, so update strings_converted.json")
-        this.writeText(GsonBuilder().setPrettyPrinting().create().toJson(newStrings))
+        this.writeText(gson.toJson(newStrings))
     }
 }
 
