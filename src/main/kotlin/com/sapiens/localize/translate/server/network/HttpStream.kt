@@ -3,7 +3,6 @@ package com.sapiens.localize.translate.server.network
 import com.google.gson.GsonBuilder
 import com.sapiens.localize.translate.server.network.interceptor.HeaderInterceptor
 import com.sapiens.localize.translate.utils.PolicyViolationRequestException
-import com.sapiens.localize.translate.utils.logd
 import com.sapiens.localize.translate.utils.logi
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -63,10 +62,10 @@ private fun call(url: String, data: Any? = null): Response {
 private fun okHttpClient(): OkHttpClient {
     val client = OkHttpClient.Builder().apply {
 
-        callTimeout(30, TimeUnit.SECONDS)
-        connectTimeout(30, TimeUnit.SECONDS)
-        readTimeout(30, TimeUnit.SECONDS)
-        writeTimeout(30, TimeUnit.SECONDS)
+        callTimeout(300, TimeUnit.SECONDS)
+        connectTimeout(300, TimeUnit.SECONDS)
+        readTimeout(300, TimeUnit.SECONDS)
+        writeTimeout(300, TimeUnit.SECONDS)
 
         addInterceptor(HeaderInterceptor())
     }.build()
