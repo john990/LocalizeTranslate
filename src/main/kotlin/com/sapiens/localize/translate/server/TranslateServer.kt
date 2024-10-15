@@ -27,15 +27,21 @@ class TranslateServer(
         val job = CoroutineScope(Dispatchers.IO).launch {
             val sb = StringBuilder()
             executeHttpStream(url(), body()) { line ->
-                 logd("TranslateServer", "received origin line: $line")
-                val pureLine = line?.trim()?.removePrefix("data:")?.removePrefix("```json")?.removeSuffix("```")?.trim()
-                if (pureLine == null || pureLine == "[DONE]" || pureLine == "null") {
+                logd("TranslateServer", "received origin line: $line")
+                line ?: return@executeHttpStream
+                val pureLine = line.trim()
+                    .removePrefix("data:")
+                    .removePrefix("```json")
+                    .removePrefix(":")
+                    .removeSuffix("```")
+                    .trim()
+                if (pureLine == "[DONE]" || pureLine == "null") {
                     deferredResult.complete(sb.removePrefix("```json").removeSuffix("```").trim().toString())
                     return@executeHttpStream
                 } else if (pureLine.startsWith("OPENROUTER")) {
                     // do nothing
                 } else if (pureLine.isNotBlank()) {
-                     logi("TranslateServer", "received line: $pureLine")
+                    logi("TranslateServer", "received line: $pureLine")
                     val text = Gson().fromJson(pureLine, ChatResponse::class.java).choices.firstOrNull()?.delta?.content
                     sb.append(text)
                     logd("TranslateServer", "text: $sb")
