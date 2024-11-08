@@ -5,7 +5,9 @@ import com.google.gson.annotations.SerializedName
 import com.sapiens.localize.translate.env.Env
 import com.sapiens.localize.translate.env.EnvConfig
 import com.sapiens.localize.translate.env.isOpenAi
+import com.sapiens.localize.translate.parser.XmlParser
 import com.sapiens.localize.translate.server.network.executeHttpStream
+import com.sapiens.localize.translate.translate.languageFile
 import com.sapiens.localize.translate.utils.Command
 import com.sapiens.localize.translate.utils.languageName
 import com.sapiens.localize.translate.utils.logd
@@ -63,18 +65,45 @@ class TranslateServer(
     } else Env.get().openai.url
 
     private fun body(): String {
+        // 获取目标语言的文件路径
+        val targetFile = language.languageFile(command.file)
+
+        // 读取已存在的翻译内容
+        val existingTranslations = if (targetFile.exists()) {
+            XmlParser.parse(targetFile.path)
+                .joinToString("\n") { "${it.first}: ${it.second}" }
+        } else ""
+
+        // 构建请求体
         val body = mutableMapOf(
             "messages" to listOf(
+                // 系统提示，定义 AI 的角色和任务
                 mapOf("role" to "system", "content" to Env.get().prompt),
-                mapOf("role" to "user", "content" to "Please translate into ${language.languageName()}:\n$text"),
+                // 用户消息，包含已有翻译和待翻译文本
+                mapOf(
+                    "role" to "user",
+                    "content" to """
+                        // Provide existing translations as reference
+                        These are some existing translations in ${language.languageName()}:
+                        $existingTranslations
+                        
+                        // Request to translate new text
+                        Please translate following text into ${language.languageName()}, 
+                        and keep consistent with existing translations:
+                        $text
+                    """.trimIndent()
+                ),
             ),
+            // 启用流式响应
             "stream" to true
         )
 
+        // 如果是 OpenAI，添加模型参数
         if (command.server.isOpenAi()) {
             body["model"] = Env.get().openai.model
         }
 
+        // 将 Map 转换为 JSON 字符串
         return Gson().toJson(body)
     }
 }
